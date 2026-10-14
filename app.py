@@ -118,7 +118,7 @@ if submit:
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
-# FIX: Removed the even-attempt str(secret) cast that forced alphabetical comparison.
+        # FIX: Removed the even-attempt str(secret) cast that forced alphabetical comparison.
         outcome, message = check_guess(guess_int, st.session_state.secret)
 
         if show_hint:
