@@ -25,19 +25,27 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] Describe the game's purpose.
+- [x] Detail which bugs you found.
+- [x] Explain what fixes you applied.
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+Sample game on Normal difficulty. The secret is 55, visible in "Developer Debug Info".
+
+1. The game opens on Normal. The sidebar shows "Range: 1 to 100" and "Attempts allowed: 8". The banner says "Guess a number between 1 and 100."
+2. The player enters 40 and clicks Submit Guess. The hint says "Go HIGHER!" and the score drops to -5.
+3. The player enters 70. The hint says "Go LOWER!" and the score drops to -10.
+4. The player enters 0. The game shows "Guess must be between 1 and 100." The guess is rejected, the score stays at -10, and the guess still uses up an attempt.
+5. The player enters 55.5. The game shows "Enter a whole number."
+6. The player enters abc. The game shows "That is not a number."
+7. The player enters 55. Balloons appear and the game shows "You won! The secret was 55. Final score: 10."
+8. Submitting again shows "You already won. Start a new game to play again."
+9. The player clicks New Game. The score returns to 0, the history clears, and a new secret is picked from the current difficulty's range.
+
+note: Submit button sometimes needs a second click right after typing to actually process the entry. 
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 
@@ -46,7 +54,26 @@ Describe your fixed game in numbered steps so a reader can follow along without 
 ```
 # Paste your pytest output here, e.g.:
 # pytest tests/
-# ========================= X passed in 0.XXs =========================
+# ============= test session starts ==============
+collected 15 items                             
+
+tests/test_game_logic.py::test_winning_guess PASSED [  6%]
+tests/test_game_logic.py::test_guess_too_high PASSED [ 13%]
+tests/test_game_logic.py::test_guess_too_low PASSED [ 20%]
+tests/test_game_logic.py::test_too_high_hint_says_go_lower PASSED [ 26%]
+tests/test_game_logic.py::test_too_low_hint_says_go_higher PASSED [ 33%]
+tests/test_game_logic.py::test_parse_guess_rejects_zero PASSED [ 40%]
+tests/test_game_logic.py::test_parse_guess_rejects_large_negative PASSED [ 46%]
+tests/test_game_logic.py::test_parse_guess_rejects_above_high PASSED [ 53%]
+tests/test_game_logic.py::test_parse_guess_accepts_bounds PASSED [ 60%]
+tests/test_game_logic.py::test_parse_guess_rejects_decimal_above_high PASSED [ 66%]
+tests/test_game_logic.py::test_parse_guess_rejects_decimal_in_range PASSED [ 73%]
+tests/test_game_logic.py::test_parse_guess_rejects_non_numeric PASSED [ 80%]
+tests/test_game_logic.py::test_parse_guess_rejects_empty_and_none PASSED [ 86%]
+tests/test_game_logic.py::test_get_range_for_difficulty PASSED [ 93%]
+tests/test_game_logic.py::test_get_range_for_difficulty_unknown_defaults_to_normal PASSED [100%]
+
+============== 15 passed in 0.02s ==============
 ```
 
 ## 🚀 Stretch Features
