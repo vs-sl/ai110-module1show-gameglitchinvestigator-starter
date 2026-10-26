@@ -1,4 +1,4 @@
-from logic_utils import check_guess, parse_guess
+from logic_utils import check_guess, get_range_for_difficulty, parse_guess
 
 def test_winning_guess():
     # If the secret is 50 and guess is 50, it should be a win
@@ -42,3 +42,32 @@ def test_parse_guess_rejects_above_high():
 def test_parse_guess_accepts_bounds():
     assert parse_guess("1", 1, 100)[:2] == (True, 1)
     assert parse_guess("100", 1, 100)[:2] == (True, 100)
+
+def test_parse_guess_rejects_decimal_above_high():
+    # Regression: "100.1" used to truncate to 100 and pass the range check
+    ok, value, err = parse_guess("100.1", 1, 100)
+    assert ok is False
+    assert value is None
+
+def test_parse_guess_rejects_decimal_in_range():
+    ok, _, err = parse_guess("7.9", 1, 100)
+    assert ok is False
+    assert err == "Enter a whole number."
+
+def test_parse_guess_rejects_non_numeric():
+    ok, _, err = parse_guess("abc", 1, 100)
+    assert ok is False
+    assert err == "That is not a number."
+
+def test_parse_guess_rejects_empty_and_none():
+    assert parse_guess("", 1, 100)[0] is False
+    assert parse_guess(None, 1, 100)[0] is False
+
+def test_get_range_for_difficulty():
+    # Guards the move from app.py into logic_utils.py
+    assert get_range_for_difficulty("Easy") == (1, 20)
+    assert get_range_for_difficulty("Normal") == (1, 100)
+    assert get_range_for_difficulty("Hard") == (1, 50)
+
+def test_get_range_for_difficulty_unknown_defaults_to_normal():
+    assert get_range_for_difficulty("Nightmare") == (1, 100)
