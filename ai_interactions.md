@@ -24,13 +24,19 @@
 
 ## Test Generation (SF7)
 
-> Document how you used AI to help generate or improve tests.
+I asked the AI for tests in three rounds. I wrote the prompts below. The AI chose the specific edge cases, and I read each test and ran the suite before keeping it.
+
+Prompts used:
+1. "Add a test for each fix in tests/test_game_logic.py. Use these two: guess 60 vs secret 50 returns 'Too High'. Guesses 0 and -100000 are rejected."
+2. The AI offered to fix decimal handling and add a test for it, I gave it the go ahead and verified results.
+3. "add the test" (for `get_range_for_difficulty`, after I moved it into logic_utils.py)
 
 | Edge Case | Prompt Used | AI-Suggested Test | Did It Pass? | Your Reasoning |
 |-----------|-------------|-------------------|--------------|----------------|
-| | | | | |
-| | | | | |
-| | | | | |
+| Decimal above the range ("100.1") | Prompt 2 | `test_parse_guess_rejects_decimal_above_high` | Yes. It fails if the old rounding code is put back (checked on a copy) | The old code turned 100.1 into 100, which slipped past the range check. This was a real bug I saw in the game. |
+| Decimal inside the range ("7.9") | Prompt 2 | `test_parse_guess_rejects_decimal_in_range` | Yes. It also fails with the old rounding code | The first test only proves the range edge. This one proves any decimal is rejected, with the message "Enter a whole number." |
+| Non-numeric text ("abc") | Prompt 2 | `test_parse_guess_rejects_non_numeric` | Yes. I did not break the code to check this one | Text is the most common bad input. It checks that the message stays "That is not a number." and the game does not crash. |
+| Empty input ("") and `None` | Prompt 2 | `test_parse_guess_rejects_empty_and_none` | Yes. I did not break the code to check this one | Clicking Submit with an empty box is easy to do by accident. The check keeps the "Enter a guess." path from raising an error. |
 
 ---
 
